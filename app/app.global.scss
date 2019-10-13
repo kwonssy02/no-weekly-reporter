@@ -6,6 +6,7 @@
 
 @import '~bootstrap/scss/bootstrap.scss';
 @import '~ionicons/dist/css/ionicons.min.css';
+@import '~react-datepicker/dist/react-datepicker.css';
 
 .col-1,
 .col-2,
@@ -86,7 +87,7 @@
 body {
   background-color: #ececec;
   color: #808080;
-  font-size: 0.8rem;
+  font-size: 1rem;
 }
 
 .wrap {
@@ -106,10 +107,11 @@ textarea.form-control {
   resize: none;
 }
 
-label {
-  // padding: 5px 0 5px 0;
+.label-week {
+  width: 100%;
+  border-radius: 5px 5px 0 0;
+  font-size: 0.9rem;
   background: #303030;
-  // border-radius: 5px;
   color: #fff;
   margin-bottom: unset;
 }
@@ -142,6 +144,54 @@ label {
   color: #fff;
   background-color: #e27248;
   border-color: #e27248;
+}
+
+.btn-orange:hover,
+.btn-orange.hover {
+  color: #fff;
+  background-color: #ff7248;
+  border-color: #ff7248;
+}
+
+.react-datepicker-thisweek {
+  background-color: #e27248;
+}
+.react-datepicker__day {
+  margin: 0;
+}
+.react-datepicker__week:hover,
+.react-datepicker__week.hover {
+  background-color: #e27248;
+  border-radius: 5px;
+  color: white;
+}
+
+.react-datepicker__week:hover .react-datepicker__day,
+.react-datepicker__week.hover .react-datepicker__day {
+  background-color: inherit;
+  color: white;
+}
+
+.react-datepicker__current-month {
+  display: none;
+}
+
+button:focus,
+button.focus {
+  outline: unset;
+}
+
+.react-datepicker__portal .react-datepicker__navigation--previous {
+  border: 0.5rem solid transparent;
+  border-right-color: #ccc;
+}
+
+.react-datepicker__portal .react-datepicker__navigation--previous:focus {
+  box-shadow: unset;
+}
+.react-datepicker__portal .react-datepicker__navigation--next {
+  border: 0.5rem solid transparent;
+  border-left-color: #ccc;
 }
 
 /*

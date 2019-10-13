@@ -3,39 +3,43 @@ import React, { Component } from 'react';
 // import { Link } from 'react-router-dom';
 // import routes from '../constants/routes';
 import { Row, Col, Input, Label, Button } from 'reactstrap';
-import moment from 'moment';
 import DatePicker from 'react-datepicker';
+import format from 'date-fns/format';
+// import getMonth from 'date-fns/getMonth';
+// import getWeekOfMonth from 'date-fns/getWeekOfMonth';
+import addWeeks from 'date-fns/addWeeks';
+import subWeeks from 'date-fns/subWeeks';
+import startOfWeek from 'date-fns/startOfWeek';
+import endOfWeek from 'date-fns/endOfWeek';
+// import getDate from 'date-fns/getDate';
 
 type Props = {};
 
 type State = {
-  lastWeek: moment,
-  currentWeek: moment,
-  nextWeek: moment
+  lastWeek: Date,
+  currentWeek: Date,
+  nextWeek: Date
 };
-
-const firstDay = 1;
 
 export default class Home extends Component<Props, State> {
   props: Props;
 
   state: State = {
-    lastWeek: moment().day(-7 + firstDay),
-    currentWeek: moment().day(0 + firstDay),
-    nextWeek: moment().day(7 + firstDay)
+    lastWeek: subWeeks(new Date(), 1),
+    currentWeek: new Date(),
+    nextWeek: addWeeks(new Date(), 1)
   };
 
   componentDidMount() {
-    // console.log(moment().week());
-    // console.log(moment('2019W42'));
+    console.log(DatePicker);
   }
 
   // 현재 날짜로 이동
   goToday = () => {
     this.setState({
-      lastWeek: moment().day(-7 + firstDay),
-      currentWeek: moment().day(0 + firstDay),
-      nextWeek: moment().day(7 + firstDay)
+      lastWeek: subWeeks(new Date(), 1),
+      currentWeek: new Date(),
+      nextWeek: addWeeks(new Date(), 1)
     });
   };
 
@@ -44,9 +48,9 @@ export default class Home extends Component<Props, State> {
     const { lastWeek, currentWeek, nextWeek } = this.state;
 
     this.setState({
-      lastWeek: lastWeek.subtract(7, 'day'),
-      currentWeek: currentWeek.subtract(7, 'day'),
-      nextWeek: nextWeek.subtract(7, 'day')
+      lastWeek: subWeeks(lastWeek, 1),
+      currentWeek: subWeeks(currentWeek, 1),
+      nextWeek: subWeeks(nextWeek, 1)
     });
   };
 
@@ -55,14 +59,24 @@ export default class Home extends Component<Props, State> {
     const { lastWeek, currentWeek, nextWeek } = this.state;
 
     this.setState({
-      lastWeek: lastWeek.add(7, 'day'),
-      currentWeek: currentWeek.add(7, 'day'),
-      nextWeek: nextWeek.add(7, 'day')
+      lastWeek: addWeeks(lastWeek, 1),
+      currentWeek: addWeeks(currentWeek, 1),
+      nextWeek: addWeeks(nextWeek, 1)
     });
   };
 
-  monthAndWeek = (now: moment) =>
-    `${now.month() + 1}월 ${Math.ceil(now.date() / 7)}째주`;
+  getWeekRange = (date: Date) => {
+    const startDay = startOfWeek(date, { weekStartsOn: 1 });
+    const endDay = endOfWeek(date, { weekStartsOn: 1 });
+
+    return `${format(startDay, 'M월 d일')} ~ ${format(endDay, 'M월 d일')}`;
+  };
+
+  setCurrentWeek = (date: Date) => {
+    this.setState({
+      currentWeek: date
+    });
+  };
 
   render() {
     const { lastWeek, currentWeek, nextWeek } = this.state;
@@ -70,13 +84,32 @@ export default class Home extends Component<Props, State> {
     return (
       <div className="wrap">
         <Row style={{ marginTop: '10px', marginBottom: '10px' }}>
-          <Col style={{ textAlign: 'right' }}>
+          <Col>
             <DatePicker
-              // selected={startDate}
-              // onChange={date => setStartDate(date)}
-              // filterDate={isWeekday}
-              placeholderText="Select a weekday"
+              selected={currentWeek}
+              onChange={date => this.setCurrentWeek(date)}
+              customInput={
+                <Button className="example-custom-input">
+                  <i className="ion-md-calendar" />
+                  &nbsp;
+                  {format(
+                    startOfWeek(currentWeek, { weekStartsOn: 1 }),
+                    'M월 d일'
+                  )}
+                  &nbsp; ~&nbsp;
+                  {format(
+                    endOfWeek(currentWeek, { weekStartsOn: 1 }),
+                    'M월 d일'
+                  )}
+                </Button>
+              }
+              withPortal
+              showMonthDropdown
+              showYearDropdown
+              dropdownMode="select"
             />
+          </Col>
+          <Col style={{ textAlign: 'right' }}>
             <Button size="md" onClick={this.goToday}>
               이번주
             </Button>
@@ -90,54 +123,24 @@ export default class Home extends Component<Props, State> {
               style={{ height: '100%', width: '100%' }}
               onClick={this.onClickBackButton}
             >
-              <span className="ion-md-arrow-back" />
+              <i className="ion-md-arrow-back" />
             </Button>
           </Col>
           <Col style={{ display: 'flex', flexDirection: 'column' }}>
             <Row>
               <Col style={{ textAlign: 'center' }}>
-                <Label
-                  for="lastWeekTextArea"
-                  style={{
-                    width: '100%',
-                    borderRadius: '5px 5px 0px 0px',
-                    fontSize: '.9rem'
-                  }}
-                >
-                  <b>{this.monthAndWeek(lastWeek)}</b>
-                </Label>
-                <Label for="lastWeekTextArea" style={{ width: '100%' }}>
-                  ({lastWeek.format('MM월 DD일')})
+                <Label for="lastWeekTextArea" className="label-week">
+                  {this.getWeekRange(lastWeek)}
                 </Label>
               </Col>
               <Col style={{ textAlign: 'center' }}>
-                <Label
-                  for="currentWeekTextArea"
-                  style={{
-                    width: '100%',
-                    borderRadius: '5px 5px 0px 0px',
-                    fontSize: '.9rem'
-                  }}
-                >
-                  <b>{this.monthAndWeek(currentWeek)}</b>
-                </Label>
-                <Label for="currentWeekTextArea" style={{ width: '100%' }}>
-                  ({currentWeek.format('MM월 DD일')})
+                <Label for="currentWeekTextArea" className="label-week">
+                  {this.getWeekRange(currentWeek)}
                 </Label>
               </Col>
               <Col style={{ textAlign: 'center' }}>
-                <Label
-                  for="nextWeekTextArea"
-                  style={{
-                    width: '100%',
-                    borderRadius: '5px 5px 0px 0px',
-                    fontSize: '.9rem'
-                  }}
-                >
-                  <b>{this.monthAndWeek(nextWeek)}</b>
-                </Label>
-                <Label for="nextWeekTextArea" style={{ width: '100%' }}>
-                  ({nextWeek.format('MM월 DD일')})
+                <Label for="nextWeekTextArea" className="label-week">
+                  {this.getWeekRange(nextWeek)}
                 </Label>
               </Col>
             </Row>
@@ -172,7 +175,7 @@ export default class Home extends Component<Props, State> {
               style={{ height: '100%', width: '100%' }}
               onClick={this.onClickForwardButton}
             >
-              <span className="ion-md-arrow-forward" />
+              <i className="ion-md-arrow-forward" />
             </Button>
           </Col>
         </Row>
