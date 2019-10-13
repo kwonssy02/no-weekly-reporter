@@ -4,6 +4,7 @@ import React, { Component } from 'react';
 // import routes from '../constants/routes';
 import { Row, Col, Input, Label, Button } from 'reactstrap';
 import moment from 'moment';
+import DatePicker from 'react-datepicker';
 
 type Props = {};
 
@@ -13,31 +14,28 @@ type State = {
   nextWeek: moment
 };
 
+const firstDay = 1;
+
 export default class Home extends Component<Props, State> {
   props: Props;
 
   state: State = {
-    lastWeek: moment().day(-6),
-    currentWeek: moment().day(1),
-    nextWeek: moment().day(8)
+    lastWeek: moment().day(-7 + firstDay),
+    currentWeek: moment().day(0 + firstDay),
+    nextWeek: moment().day(7 + firstDay)
   };
 
   componentDidMount() {
-    // console.log(today);
-    // console.log(moment().day(-6));
-    // console.log(moment().day(1));
-    // console.log(moment().day(8));
-    // console.log(`${moment().day(-6).year()}/${moment().day(-6).month()+1}/${Math.ceil(moment().day(-6).date() / 7)}`);
-    // console.log(`${moment().day(1).year()}/${moment().day(1).month()+1}/${Math.ceil(moment().day(1).date() / 7)}`);
-    // console.log(`${moment().day(8).year()}/${moment().day(8).month()+1}/${Math.ceil(moment().day(8).date() / 7)}`);
+    // console.log(moment().week());
+    // console.log(moment('2019W42'));
   }
 
   // 현재 날짜로 이동
   goToday = () => {
     this.setState({
-      lastWeek: moment().day(-6),
-      currentWeek: moment().day(1),
-      nextWeek: moment().day(8)
+      lastWeek: moment().day(-7 + firstDay),
+      currentWeek: moment().day(0 + firstDay),
+      nextWeek: moment().day(7 + firstDay)
     });
   };
 
@@ -63,6 +61,9 @@ export default class Home extends Component<Props, State> {
     });
   };
 
+  monthAndWeek = (now: moment) =>
+    `${now.month() + 1}월 ${Math.ceil(now.date() / 7)}째주`;
+
   render() {
     const { lastWeek, currentWeek, nextWeek } = this.state;
 
@@ -70,6 +71,12 @@ export default class Home extends Component<Props, State> {
       <div className="wrap">
         <Row style={{ marginTop: '10px', marginBottom: '10px' }}>
           <Col style={{ textAlign: 'right' }}>
+            <DatePicker
+              // selected={startDate}
+              // onChange={date => setStartDate(date)}
+              // filterDate={isWeekday}
+              placeholderText="Select a weekday"
+            />
             <Button size="md" onClick={this.goToday}>
               이번주
             </Button>
@@ -89,18 +96,48 @@ export default class Home extends Component<Props, State> {
           <Col style={{ display: 'flex', flexDirection: 'column' }}>
             <Row>
               <Col style={{ textAlign: 'center' }}>
+                <Label
+                  for="lastWeekTextArea"
+                  style={{
+                    width: '100%',
+                    borderRadius: '5px 5px 0px 0px',
+                    fontSize: '.9rem'
+                  }}
+                >
+                  <b>{this.monthAndWeek(lastWeek)}</b>
+                </Label>
                 <Label for="lastWeekTextArea" style={{ width: '100%' }}>
-                  {lastWeek.format('MM-DD')}
+                  ({lastWeek.format('MM월 DD일')})
                 </Label>
               </Col>
               <Col style={{ textAlign: 'center' }}>
+                <Label
+                  for="currentWeekTextArea"
+                  style={{
+                    width: '100%',
+                    borderRadius: '5px 5px 0px 0px',
+                    fontSize: '.9rem'
+                  }}
+                >
+                  <b>{this.monthAndWeek(currentWeek)}</b>
+                </Label>
                 <Label for="currentWeekTextArea" style={{ width: '100%' }}>
-                  {currentWeek.format('MM-DD')}
+                  ({currentWeek.format('MM월 DD일')})
                 </Label>
               </Col>
               <Col style={{ textAlign: 'center' }}>
+                <Label
+                  for="nextWeekTextArea"
+                  style={{
+                    width: '100%',
+                    borderRadius: '5px 5px 0px 0px',
+                    fontSize: '.9rem'
+                  }}
+                >
+                  <b>{this.monthAndWeek(nextWeek)}</b>
+                </Label>
                 <Label for="nextWeekTextArea" style={{ width: '100%' }}>
-                  {nextWeek.format('MM-DD')}
+                  ({nextWeek.format('MM월 DD일')})
                 </Label>
               </Col>
             </Row>
@@ -109,21 +146,21 @@ export default class Home extends Component<Props, State> {
                 <Input
                   type="textarea"
                   id="lastWeekTextArea"
-                  style={{ height: '100%' }}
+                  style={{ height: '100%', borderRadius: '0px 0px 5px 5px' }}
                 />
               </Col>
               <Col>
                 <Input
                   type="textarea"
                   id="currentWeekTextArea"
-                  style={{ height: '100%' }}
+                  style={{ height: '100%', borderRadius: '0px 0px 5px 5px' }}
                 />
               </Col>
               <Col>
                 <Input
                   type="textarea"
                   id="nextWeekTextArea"
-                  style={{ height: '100%' }}
+                  style={{ height: '100%', borderRadius: '0px 0px 5px 5px' }}
                 />
               </Col>
             </Row>
